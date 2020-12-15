@@ -1,5 +1,5 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import router from './router';
 
 import { IonicVue } from '@ionic/vue';
@@ -20,13 +20,19 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+defineCustomElements(window);
+
 /* Theme variables */
 import './theme/variables.css';
 
+import BaseLayout from './components/BaseLayout.vue';
+
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
-  
+	.use(IonicVue)
+	.use(router)
+	.component('base-layout', BaseLayout);
+
 router.isReady().then(() => {
-  app.mount('#app');
+	app.mount('#app');
 });
