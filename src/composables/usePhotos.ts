@@ -11,7 +11,6 @@ import { alertController } from '@ionic/vue';
 export interface Photo {
 	filepath: string;
 	webviewPath?: string;
-	isChecked: boolean;
 }
 
 export function usePhotos() {
@@ -52,8 +51,7 @@ export function usePhotos() {
 
 		return {
 			filepath: fileName,
-			webviewPath: photo.webPath,
-			isChecked: false
+			webviewPath: photo.webPath
 		};
 	};
 
@@ -61,7 +59,6 @@ export function usePhotos() {
 		const cameraPhoto = await Camera.getPhoto({
 			resultType: CameraResultType.Uri,
 			source: CameraSource.Camera,
-			allowEditing: true,
 			quality: 100,
 			webUseInput: true
 		});
@@ -72,50 +69,31 @@ export function usePhotos() {
 		photos.value = [savedFileImage, ...photos.value];
 	};
 
-	const hasSelection = () => {
-		return photos.value.find((i) => i.isChecked === true) !== undefined;
-	};
-
-	let selectAll = true;
-	const selectAllPhotos = () => {
-		if (!hasSelection()) {
-			selectAll = true;
-		}
-		for (let i = 0; i < photos.value.length; i++) {
-			photos.value[i].isChecked = selectAll;
-		}
-		selectAll = !selectAll;
-	};
-
-	const removePhotos = async () => {
-		if (hasSelection()) {
-			const alert = await alertController.create({
-				header: 'Confirm',
-				subHeader: 'Are you sure you want to delete the selected photos?',
-				buttons: [
-					{
-						text: 'Cancel',
-						role: 'cancel'
-					},
-					{
-						text: 'Delete',
-						handler: () => {
-							photos.value = photos.value.filter(
-								(i: any) => i.isChecked === false
-							);
-						}
+	const removePhoto = async (photo: Photo) => {
+		const alert = await alertController.create({
+			header: 'Confirm',
+			subHeader: 'Are you sure you want to delete this photo?',
+			buttons: [
+				{
+					text: 'Cancel',
+					role: 'cancel'
+				},
+				{
+					text: 'Delete',
+					handler: () => {
+						photos.value = photos.value.filter(
+							(i: any) => i.webviewPath !== photo.webviewPath
+						);
 					}
-				]
-			});
-			alert.present();
-		}
+				}
+			]
+		});
+		alert.present();
 	};
 
 	return {
 		takePhoto,
 		photos,
-		hasSelection,
-		selectAllPhotos,
-		removePhotos
+		removePhoto
 	};
 }

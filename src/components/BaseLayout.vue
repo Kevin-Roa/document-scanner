@@ -5,10 +5,9 @@
         <ion-title size="large">{{ title }}</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content>
       <slot />
     </ion-content>
-    <ion-footer></ion-footer>
   </ion-page>
 </template>
 
@@ -19,7 +18,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonFooter,
 } from "@ionic/vue";
 export default {
   components: {
@@ -28,7 +26,6 @@ export default {
     IonToolbar,
     IonTitle,
     IonContent,
-    IonFooter,
   },
   props: ["title"],
 };
