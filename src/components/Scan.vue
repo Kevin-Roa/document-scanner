@@ -1,5 +1,5 @@
 <template>
-  <base-layout title="Scan Document">
+  <base-layout title="Scanner">
     <ion-text color="medium" style="text-align: center">
       <p v-if="photos.length === 0">Tap the camera icon to scan a document.</p>
     </ion-text>
@@ -27,7 +27,7 @@
       </ion-row>
     </ion-grid>
   </base-layout>
-  <controls :takePhoto="takePhoto" />
+  <controls :takePhoto="takePhoto" :photos="photos" :saveAsPDF="saveAsPDF" />
 </template>
 
 <script lang="ts">
@@ -58,13 +58,14 @@ export default defineComponent({
     Controls,
   },
   setup() {
-    const { takePhoto, photos, removePhoto } = usePhotos();
+    const { takePhoto, photos, removePhoto, saveAsPDF } = usePhotos();
 
     return {
       photos,
       removePhoto,
       takePhoto,
       trash,
+      saveAsPDF,
     };
   },
 });
