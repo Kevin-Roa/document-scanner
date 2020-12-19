@@ -14,7 +14,6 @@ export interface Photo {
 	metadata: string[];
 	tags: string[];
 	base64Data: string;
-	dimensions: {};
 }
 
 export function usePhotos() {
@@ -32,15 +31,15 @@ export function usePhotos() {
 		});
 
 	const saveAsPDF = () => {
-		const pdf = new jsPDF({ format: 'letter', unit: 'mm' });
+		const pdf = new jsPDF({ format: [280, 216], unit: 'mm', compress: true });
 		const len = photos.value.length - 1;
 		for (let i = 0; i <= len; ++i) {
 			pdf.addImage(
 				photos.value[len - i].base64Data,
 				'PNG',
 				0,
-				-200,
-				279,
+				-216,
+				280,
 				216,
 				'' + i,
 				'NONE',
@@ -50,8 +49,8 @@ export function usePhotos() {
 				pdf.addPage();
 			}
 		}
-		// pdf.save('test.pdf');
-		console.log(pdf.output());
+		pdf.save('test.pdf');
+		// console.log(pdf.output());
 		// console.log(pdf);
 	};
 
@@ -60,6 +59,7 @@ export function usePhotos() {
 		fileName: string
 	): Promise<Photo> => {
 		// Fetch the photo, read as a blob, then convert to base64 format
+		// eslint-disable-next-line
 		const response = await fetch(photo.webPath!);
 		const blob = await response.blob();
 		const base64Data = (await convertBlobToBase64(blob)) as string;
@@ -69,8 +69,7 @@ export function usePhotos() {
 			webviewPath: photo.webPath,
 			metadata: [],
 			tags: [],
-			base64Data,
-			dimensions: {}
+			base64Data
 		};
 	};
 
@@ -78,7 +77,7 @@ export function usePhotos() {
 		Camera.getPhoto({
 			resultType: CameraResultType.Uri,
 			source: CameraSource.Camera,
-			quality: 100,
+			quality: 60,
 			webUseInput: true
 		}).then((photo) => {
 			const fileName = new Date().getTime() + '.png';

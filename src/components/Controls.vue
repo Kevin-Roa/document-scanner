@@ -5,14 +5,17 @@
     </ion-fab-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="center" style="margin-bottom: 10px">
-    <ion-fab-button @click="takePhoto()">
+    <ion-fab-button @click="usePhotos.takePhoto()">
       <ion-icon :icon="camera"></ion-icon>
     </ion-fab-button>
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="end" style="margin-bottom: 10px">
     <ion-fab-button
-      @click="saveAsPDF()"
-      :disabled="photos.length === 0 || photos === undefined"
+      @click="usePhotos.saveAsPDF()"
+      :disabled="
+        usePhotos.photos.value.length === 0 ||
+        usePhotos.photos.value === undefined
+      "
     >
       <ion-icon :icon="cloudUpload"></ion-icon>
     </ion-fab-button>
@@ -29,7 +32,7 @@ export default {
     IonFabButton,
     IonIcon,
   },
-  props: ["takePhoto", "photos", "saveAsPDF"],
+  props: ["usePhotos"],
   data() {
     return {
       modal: null,

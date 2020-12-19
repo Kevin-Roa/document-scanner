@@ -1,11 +1,14 @@
 <template>
   <base-layout title="Scanner">
+    <ion-fab-button @click="signOut()">Signout</ion-fab-button>
     <ion-text color="medium" style="text-align: center">
-      <p v-if="photos.length === 0">Tap the camera icon to scan a document.</p>
+      <p v-if="uf.photos.value.length === 0">
+        Tap the camera icon to scan a document.
+      </p>
     </ion-text>
     <ion-grid style="margin-bottom: 60px">
       <ion-row>
-        <ion-col size="3" :key="photo" v-for="photo in photos">
+        <ion-col size="3" :key="photo" v-for="photo in uf.photos.value">
           <ion-img :src="photo.webviewPath"></ion-img>
           <div
             style="
@@ -16,7 +19,7 @@
             "
           >
             <ion-fab-button
-              @click="removePhoto(photo)"
+              @click="uf.removePhoto(photo)"
               size="small"
               color="light"
             >
@@ -27,10 +30,11 @@
       </ion-row>
     </ion-grid>
   </base-layout>
-  <controls :takePhoto="takePhoto" :photos="photos" :saveAsPDF="saveAsPDF" />
+  <controls :usePhotos="uf" />
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import {
   IonFabButton,
   IonIcon,
@@ -41,9 +45,10 @@ import {
   IonText,
 } from "@ionic/vue";
 import { trash } from "ionicons/icons";
-import { defineComponent } from "vue";
+import { auth } from "@/firebase";
 import { usePhotos } from "@/composables/usePhotos.ts";
 import Controls from "@/components/Controls.vue";
+import router from "@/router";
 
 export default defineComponent({
   name: "Home",
@@ -58,14 +63,18 @@ export default defineComponent({
     Controls,
   },
   setup() {
-    const { takePhoto, photos, removePhoto, saveAsPDF } = usePhotos();
+    const uf = usePhotos();
+
+    const signOut = () => {
+      auth.signOut().then(() => {
+        router.push("/login");
+      });
+    };
 
     return {
-      photos,
-      removePhoto,
-      takePhoto,
+      uf,
+      signOut,
       trash,
-      saveAsPDF,
     };
   },
 });

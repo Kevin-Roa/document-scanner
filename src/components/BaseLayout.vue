@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header collapse="condense">
+    <ion-header collapse="condense" :translucent="true">
       <ion-toolbar>
         <ion-title size="large">{{ title }}</ion-title>
       </ion-toolbar>
