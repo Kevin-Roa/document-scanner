@@ -13,8 +13,8 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+    <settings-menu />
     <ion-content>
-      <settings-menu />
       <ion-text color="medium" style="text-align: center">
         <p v-if="uf.photos.value.length === 0">
           Tap the camera icon to scan a document.
@@ -44,8 +44,8 @@
         </ion-row>
       </ion-grid>
     </ion-content>
+    <controls :usePhotos="uf" />
   </ion-page>
-  <controls :usePhotos="uf" />
 </template>
 
 <script lang="ts">

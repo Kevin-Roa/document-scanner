@@ -73,6 +73,8 @@ export function usePhotos() {
 		};
 	};
 
+	let lastAdded = new Date().getTime();
+
 	const takePhoto = async () => {
 		Camera.getPhoto({
 			resultType: CameraResultType.Uri,
@@ -80,9 +82,15 @@ export function usePhotos() {
 			quality: 60,
 			webUseInput: true
 		}).then((photo) => {
-			const fileName = new Date().getTime() + '.png';
+			const date = new Date().getTime();
+			const fileName = date + '.png';
+
 			savePicture(photo, fileName).then((image) => {
-				photos.value = [image, ...photos.value];
+				//Prevent camera from taking duplicate pictures
+				if (date - lastAdded > 1000) {
+					photos.value = [image, ...photos.value];
+					lastAdded = new Date().getTime();
+				}
 			});
 		});
 	};

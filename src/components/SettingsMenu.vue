@@ -4,7 +4,7 @@
     type="overlay"
     menu-id="settingsMenu"
     content-id="main"
-    style="--max-width: 230px"
+    style="--max-width: 60%"
   >
     <ion-header>
       <ion-toolbar>
