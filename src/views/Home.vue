@@ -1,6 +1,7 @@
 <template>
   <ion-page>
-    <scan />
+    <scan v-if="loggedIn" />
+    <login v-else />
   </ion-page>
 </template>
 
@@ -8,31 +9,25 @@
 import { defineComponent } from "vue";
 import { IonPage } from "@ionic/vue";
 import Scan from "@/components/Scan.vue";
+import Login from "@/views/Login.vue";
 import { auth } from "@/firebase";
-import { useStore } from "@/store";
 
 export default defineComponent({
   name: "Home",
   components: {
     IonPage,
     Scan,
+    Login,
   },
   setup() {
-    const store = useStore();
+    let loggedIn = false;
 
-    let user = store.state.user;
-    auth.onAuthStateChanged((usr) => {
-      if (usr) {
-        store.commit("setUser", auth.currentUser);
-        user = store.state.user;
-      } else {
-        store.commit("setUser", null);
-        user = store.state.user;
-      }
-    });
+    if (auth.currentUser) {
+      loggedIn = true;
+    }
 
     return {
-      user,
+      loggedIn,
     };
   },
 });
