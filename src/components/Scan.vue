@@ -1,10 +1,10 @@
 <template>
   <ion-page>
-    <ion-header collapse="condense" :translucent="true">
+    <ion-header>
       <ion-toolbar>
         <ion-title size="large">Scanner</ion-title>
         <ion-buttons slot="end">
-          <ion-button>
+          <ion-button @click="openMenu()">
             <ion-icon
               :icon="ellipsisHorizontal"
               style="font-size: 35px"
@@ -14,7 +14,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-fab-button @click="signOut()">Signout</ion-fab-button>
+      <settings-menu />
       <ion-text color="medium" style="text-align: center">
         <p v-if="uf.photos.value.length === 0">
           Tap the camera icon to scan a document.
@@ -64,12 +64,14 @@ import {
   IonTitle,
   IonButton,
   IonButtons,
+  IonContent,
+  menuController,
 } from "@ionic/vue";
 import { trash, ellipsisHorizontal } from "ionicons/icons";
-import { auth } from "@/firebase";
 import { usePhotos } from "@/composables/usePhotos.ts";
+
 import Controls from "@/components/Controls.vue";
-import router from "@/router";
+import SettingsMenu from "@/components/SettingsMenu.vue";
 
 export default defineComponent({
   name: "Home",
@@ -87,22 +89,22 @@ export default defineComponent({
     IonTitle,
     IonButton,
     IonButtons,
+    IonContent,
     Controls,
+    SettingsMenu,
   },
   setup() {
     const uf = usePhotos();
 
-    const signOut = () => {
-      auth.signOut().then(() => {
-        router.go(0);
-      });
+    const openMenu = () => {
+      menuController.toggle("settingsMenu");
     };
 
     return {
       uf,
-      signOut,
       trash,
       ellipsisHorizontal,
+      openMenu,
     };
   },
 });
