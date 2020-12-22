@@ -2,15 +2,15 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title size="large">Scanner</ion-title>
-        <ion-buttons slot="end">
-          <ion-button @click="openMenu()">
+        <ion-title>Doc Scanner</ion-title>
+        <!-- <ion-buttons slot="end"> -->
+        <!-- <ion-button @click="openMenu()">
             <ion-icon
               :icon="ellipsisHorizontal"
               style="font-size: 35px"
             ></ion-icon>
-          </ion-button>
-        </ion-buttons>
+          </ion-button> -->
+        <!-- </ion-buttons> -->
       </ion-toolbar>
     </ion-header>
     <settings-menu />
@@ -52,7 +52,7 @@
 import { defineComponent } from "vue";
 import {
   IonFabButton,
-  IonIcon,
+  // IonIcon,
   IonGrid,
   IonRow,
   IonCol,
@@ -62,8 +62,8 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButton,
-  IonButtons,
+  // IonButton,
+  // IonButtons,
   IonContent,
   menuController,
 } from "@ionic/vue";
@@ -77,7 +77,7 @@ export default defineComponent({
   name: "Home",
   components: {
     IonFabButton,
-    IonIcon,
+    // IonIcon,
     IonGrid,
     IonRow,
     IonCol,
@@ -87,8 +87,8 @@ export default defineComponent({
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonButton,
-    IonButtons,
+    // IonButton,
+    // IonButtons,
     IonContent,
     Controls,
     SettingsMenu,
