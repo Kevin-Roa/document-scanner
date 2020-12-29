@@ -7,15 +7,39 @@ import {
 } from '@capacitor/core';
 import { alertController } from '@ionic/vue';
 import { jsPDF } from 'jspdf';
-import JSZip from 'jszip';
-import { storage } from '@/firebase';
-
+// import { google } from 'googleapis';
+// import JSZip from 'jszip';
+// import { Zip } from 'zip-lib';
+// import { storage } from '@/firebase';
+// import * as fs from 'fs-extra';
+// import { tmpdir } from 'os';
 export interface Photo {
 	filepath: string;
 	webviewPath?: string;
 	metadata: string[];
 	tags: string[];
 	base64Data: string;
+}
+
+function driveUpload() {
+	// const drive = google.drive({ version: 'v3' });
+	// drive.files.list(
+	// 	{
+	// 		pageSize: 10,
+	// 		fields: 'nextPageToken, files(id, name)'
+	// 	},
+	// 	(err: any, res: any) => {
+	// 		const files = res.data.files;
+	// 		if (files.length) {
+	// 			console.log('Files:');
+	// 			files.map((file: any) => {
+	// 				console.log(`${file.name} (${file.id})`);
+	// 			});
+	// 		} else {
+	// 			console.log('No files found.');
+	// 		}
+	// 	}
+	// );
 }
 
 export function usePhotos() {
@@ -51,31 +75,59 @@ export function usePhotos() {
 				pdf.addPage();
 			}
 		}
+		driveUpload();
 		// pdf.save('test.pdf');
 		// console.log(pdf.output());
 		// console.log(pdf);
-		const zip = new JSZip();
+		//const zip = new JSZip();
+		// const zip = new Zip();
 
-		for (let i = 0; i <= len; i++) {
-			const filename = photos.value[i].filepath;
-			const data = photos.value[i].base64Data.split(
-				'data:image/png;base64,'
-			)[1];
-			zip.file(filename, data, { base64: true });
-		}
+		// for (let i = 0; i <= len; i++) {
+		// 	const filename = photos.value[i].filepath;
+		// 	const data = photos.value[i].base64Data.split(
+		// 		'data:image/png;base64,'
+		// 	)[1];
+		// 	zip.file(filename, data, { base64: true });
+		// 	// zip.addFile(photos.value[i].webviewPath!);
+		// }
 
-		zip.generateAsync({ type: 'uint8array' }).then((data) => {
-			const resultBucket = 'document-scanner-ab480-vision';
-			const filePath = new Date() + '.zip';
-			const url = `gs://${resultBucket}/${filePath}`;
+		// const filePath = tmpdir() + '/test.zip';
+		// zip.archive(filePath).then(() => {
+		// 	fs.readFile(filePath, (err: Error, data: ArrayBuffer) => {
+		// 		if (err) {
+		// 			console.log(err);
+		// 		} else {
+		// 			const resultBucket = 'document-scanner-ab480-vision';
+		// 			const fileName = new Date().getTime() + '.zip';
+		// 			const url = `gs://${resultBucket}/${fileName}`;
+		// 			storage
+		// 				.refFromURL(url)
+		// 				.put(data)
+		// 				.catch((err) => {
+		// 					console.log(err);
+		// 				});
+		// 		}
+		// 	});
+		// });
 
-			storage
-				.refFromURL(url)
-				.put(data)
-				.catch((err) => {
-					console.log(err);
-				});
-		});
+		// zip
+		// 	.generateAsync({
+		// 		type: 'blob',
+		// 		compression: 'DEFLATE',
+		// 		platform: 'UNIX'
+		// 	})
+		// 	.then((data: Blob) => {
+		// 		const resultBucket = 'document-scanner-ab480-vision';
+		// 		const filePath = new Date().getTime() + '.zip';
+		// 		const url = `gs://${resultBucket}/${filePath}`;
+
+		// 		storage
+		// 			.refFromURL(url)
+		// 			.put(data)
+		// 			.catch((err) => {
+		// 				console.log(err);
+		// 			});
+		// 	});
 	};
 
 	const savePicture = async (
