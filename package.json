@@ -18,10 +18,16 @@
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^6.0.0",
     "firebase": "^8.2.1",
+    "firebase-admin": "^9.4.2",
+    "fs-extra": "^9.0.1",
+    "googleapis": "^66.0.0",
     "jspdf": "^2.2.0",
+    "jszip": "^3.5.0",
+    "os": "^0.1.1",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-rc.2"
+    "vuex": "^4.0.0-rc.2",
+    "zip-lib": "^0.7.2"
   },
   "devDependencies": {
     "@capacitor/cli": "2.4.5",
