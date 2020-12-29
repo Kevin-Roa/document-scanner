@@ -5,6 +5,7 @@ import { store, key } from './store';
 import { IonicVue } from '@ionic/vue';
 import { auth } from './firebase';
 import './ionic';
+require('dotenv').config();
 
 let app: any;
 auth.onAuthStateChanged(() => {
