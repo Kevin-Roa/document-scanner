@@ -21,10 +21,10 @@ export default defineComponent({
   },
   setup() {
     let loggedIn = false;
-    // console.log(auth.currentUser?.toJSON());
 
     if (auth.currentUser) {
       loggedIn = true;
+      localStorage.refreshToken = auth.currentUser.refreshToken;
     }
 
     return {

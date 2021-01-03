@@ -7,12 +7,8 @@ import {
 } from '@capacitor/core';
 import { alertController } from '@ionic/vue';
 import { jsPDF } from 'jspdf';
-// import { google } from 'googleapis';
-// import JSZip from 'jszip';
-// import { Zip } from 'zip-lib';
-// import { storage } from '@/firebase';
-// import * as fs from 'fs-extra';
-// import { tmpdir } from 'os';
+import { storage } from '@/firebase';
+
 export interface Photo {
 	filepath: string;
 	webviewPath?: string;
@@ -21,42 +17,24 @@ export interface Photo {
 	base64Data: string;
 }
 
-function driveUpload() {
-	// const drive = google.drive({ version: 'v3' });
-	// drive.files.list(
-	// 	{
-	// 		pageSize: 10,
-	// 		fields: 'nextPageToken, files(id, name)'
-	// 	},
-	// 	(err: any, res: any) => {
-	// 		const files = res.data.files;
-	// 		if (files.length) {
-	// 			console.log('Files:');
-	// 			files.map((file: any) => {
-	// 				console.log(`${file.name} (${file.id})`);
-	// 			});
-	// 		} else {
-	// 			console.log('No files found.');
-	// 		}
-	// 	}
-	// );
-}
-
 export function usePhotos() {
 	const { Camera } = Plugins;
 	const photos = ref<Photo[]>([]);
 
-	const convertBlobToBase64 = (blob: Blob) =>
-		new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onerror = reject;
-			reader.onload = () => {
-				resolve(reader.result);
-			};
-			reader.readAsDataURL(blob);
-		});
+	const uploadPdf = (pdf: jsPDF) => {
+		const resultBucket = 'document-scanner-ab480.appspot.com';
+		const fileName = new Date().getTime() + '.pdf';
+		const url = `gs://${resultBucket}/${fileName}`;
 
-	const saveAsPDF = () => {
+		storage
+			.refFromURL(url)
+			.put(pdf.output('blob'))
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const createPDF = () => {
 		const pdf = new jsPDF({ format: [280, 216], unit: 'mm', compress: true });
 		const len = photos.value.length - 1;
 		for (let i = 0; i <= len; ++i) {
@@ -75,60 +53,19 @@ export function usePhotos() {
 				pdf.addPage();
 			}
 		}
-		driveUpload();
-		// pdf.save('test.pdf');
-		// console.log(pdf.output());
-		// console.log(pdf);
-		//const zip = new JSZip();
-		// const zip = new Zip();
 
-		// for (let i = 0; i <= len; i++) {
-		// 	const filename = photos.value[i].filepath;
-		// 	const data = photos.value[i].base64Data.split(
-		// 		'data:image/png;base64,'
-		// 	)[1];
-		// 	zip.file(filename, data, { base64: true });
-		// 	// zip.addFile(photos.value[i].webviewPath!);
-		// }
-
-		// const filePath = tmpdir() + '/test.zip';
-		// zip.archive(filePath).then(() => {
-		// 	fs.readFile(filePath, (err: Error, data: ArrayBuffer) => {
-		// 		if (err) {
-		// 			console.log(err);
-		// 		} else {
-		// 			const resultBucket = 'document-scanner-ab480-vision';
-		// 			const fileName = new Date().getTime() + '.zip';
-		// 			const url = `gs://${resultBucket}/${fileName}`;
-		// 			storage
-		// 				.refFromURL(url)
-		// 				.put(data)
-		// 				.catch((err) => {
-		// 					console.log(err);
-		// 				});
-		// 		}
-		// 	});
-		// });
-
-		// zip
-		// 	.generateAsync({
-		// 		type: 'blob',
-		// 		compression: 'DEFLATE',
-		// 		platform: 'UNIX'
-		// 	})
-		// 	.then((data: Blob) => {
-		// 		const resultBucket = 'document-scanner-ab480-vision';
-		// 		const filePath = new Date().getTime() + '.zip';
-		// 		const url = `gs://${resultBucket}/${filePath}`;
-
-		// 		storage
-		// 			.refFromURL(url)
-		// 			.put(data)
-		// 			.catch((err) => {
-		// 				console.log(err);
-		// 			});
-		// 	});
+		uploadPdf(pdf);
 	};
+
+	const convertBlobToBase64 = (blob: Blob) =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onerror = reject;
+			reader.onload = () => {
+				resolve(reader.result);
+			};
+			reader.readAsDataURL(blob);
+		});
 
 	const savePicture = async (
 		photo: CameraPhoto,
@@ -197,6 +134,6 @@ export function usePhotos() {
 		takePhoto,
 		photos,
 		removePhoto,
-		saveAsPDF
+		createPDF
 	};
 }

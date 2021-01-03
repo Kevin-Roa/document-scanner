@@ -78,7 +78,7 @@ export default {
     const googleSignIn = () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("https://www.googleapis.com/auth/cloud-platform");
-      provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+      // provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
 
       auth.signInWithRedirect(provider);
       auth
@@ -90,6 +90,7 @@ export default {
             store.commit("setToken", credential.accessToken);
           }
           store.commit("setUser", result.user);
+          localStorage.refreshToken = result.user?.refreshToken;
         })
         .catch(function (error) {
           const errorCode = error.code;

@@ -11,7 +11,7 @@
   </ion-fab>
   <ion-fab vertical="bottom" horizontal="end" style="margin-bottom: 10px">
     <ion-fab-button
-      @click="usePhotos.saveAsPDF()"
+      @click="usePhotos.createPDF()"
       :disabled="
         usePhotos.photos.value.length === 0 ||
         usePhotos.photos.value === undefined
