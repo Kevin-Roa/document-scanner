@@ -18,6 +18,9 @@ export const saveToDrive = functions.storage
 			// Upload to google drive
 
 			// Remove pdf from cloud bucket
-			bucket.file(fullFileName).delete();
+			return bucket.file(fullFileName).delete();
+		} else {
+			console.log('Uploaded file is not a PDF.');
+			return null;
 		}
 	});
