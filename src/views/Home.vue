@@ -27,6 +27,8 @@ export default defineComponent({
       localStorage.refreshToken = auth.currentUser.refreshToken;
     }
 
+    console.log(auth.app);
+
     return {
       loggedIn,
     };

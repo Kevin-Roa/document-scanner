@@ -7,7 +7,8 @@ import {
 } from '@capacitor/core';
 import { alertController } from '@ionic/vue';
 import { jsPDF } from 'jspdf';
-import { storage } from '@/firebase';
+import { auth } from '@/firebase';
+import axios from 'axios';
 
 export interface Photo {
 	filepath: string;
@@ -22,16 +23,25 @@ export function usePhotos() {
 	const photos = ref<Photo[]>([]);
 
 	const uploadPdf = (pdf: jsPDF) => {
-		const resultBucket = 'document-scanner-ab480.appspot.com';
-		const fileName = new Date().getTime() + '.pdf';
-		const url = `gs://${resultBucket}/${fileName}`;
+		// const resultBucket = 'document-scanner-ab480.appspot.com';
+		// const fileName = new Date().getTime() + '.pdf';
+		// const url = `gs://${resultBucket}/${fileName}`;
 
-		storage
-			.refFromURL(url)
-			.put(pdf.output('blob'))
-			.catch((err) => {
-				console.log(err);
-			});
+		// storage
+		// 	.refFromURL(url)
+		// 	.put(pdf.output('blob'))
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
+		const uploadData = {
+			token: auth.currentUser?.refreshToken,
+			pdf: pdf.output('arraybuffer')
+		};
+		axios.post(
+			'https://us-central1-document-scanner-ab480.cloudfunctions.net/savePdfToDrive',
+			// 'http://localhost:5001/document-scanner-ab480/us-central1/savePdfToDrive',
+			uploadData
+		);
 	};
 
 	const createPDF = () => {

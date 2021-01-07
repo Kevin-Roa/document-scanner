@@ -78,14 +78,16 @@ export default {
     const googleSignIn = () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("https://www.googleapis.com/auth/cloud-platform");
-      // provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+      provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+      provider.addScope("https://www.googleapis.com/auth/drive");
 
-      auth.signInWithRedirect(provider);
+      console.log("here");
       auth
         .getRedirectResult()
         .then(function (result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
           const credential = result.credential as firebase.auth.OAuthCredential;
+          console.log(credential.accessToken);
           if (credential) {
             store.commit("setToken", credential.accessToken);
           }
@@ -97,6 +99,7 @@ export default {
           const errorMessage = error.message;
           console.log(errorCode + "\n" + errorMessage);
         });
+      auth.signInWithRedirect(provider);
     };
 
     return {
