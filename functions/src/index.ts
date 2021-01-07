@@ -31,25 +31,6 @@ admin.initializeApp(functions.config().firebase);
 // 			return null;
 // 		}
 // 	});
-const creds = {
-	web: {
-		client_id:
-			'89321499014-u75galc6n9uiu8h8bo0cb9h89d7ae9kh.apps.googleusercontent.com',
-		project_id: 'document-scanner-ab480',
-		auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-		token_uri: 'https://oauth2.googleapis.com/token',
-		auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-		client_secret: 'yCOYu9jkvm7XkIYObboM4yn4',
-		redirect_uris: [
-			'https://document-scanner-ab480.firebaseapp.com/__/auth/handler'
-		],
-		javascript_origins: [
-			'http://localhost',
-			'http://localhost:8100',
-			'https://document-scanner-ab480.firebaseapp.com'
-		]
-	}
-};
 
 export const savePdfToDrive = functions.https.onRequest((req, res) => {
 	res.header('Access-Control-Allow-Origin', '*');
