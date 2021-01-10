@@ -10,11 +10,16 @@ admin.initializeApp(functions.config().firebase);
 exports.scanDocument = functions.storage
 	.object()
 	.onFinalize(async (object: ObjectMetadata) => {
+		// Name of the bucket the file is in
 		const bucketName = object.bucket;
+		// Reference to the bucket
 		const bucketRef = admin.storage().bucket(bucketName);
 
+		// Name of the file with directory path and file type
 		const fileName = object.name;
+		// Uri to the file on google cloud
 		const fileUri = `gs://${bucketName}/${fileName}`;
+		// Uri to the destination for the final file
 		const fileDestUri = `gs://${bucketName}/${fileName?.split('.')[0]}`;
 
 		// Case for the OCR output file
@@ -22,10 +27,10 @@ exports.scanDocument = functions.storage
 		if (['output', '.json'].every((val) => fileName?.includes(val))) {
 			console.log('Getting file metadata.');
 
+			// Reference to the file in storage
 			const file = bucketRef.file(fileName!);
 
 			let description = '';
-
 			// Download the json file contents into local memory
 			await file.download().then((data) => {
 				// Read the data from memory and convert it into a json string
@@ -44,45 +49,42 @@ exports.scanDocument = functions.storage
 				description.replace('\n', ' ');
 			});
 
-			let tags: String[] = [];
-			const keywords = ['reciept', 'company A', 'company B', 'caliber', 'localhost'];
+			// Reference to the users collection
+			const firestoreRef = admin.firestore().collection('users');
+
+			// Full name of the associated pdf file (with uid path)
+			const pdfFullName = fileName!.split('output')[0] + '.pdf';
+			// Strip the uid path
+			const pdfName = pdfFullName.split('/')[1];
+			// Strip .pdf
+			const pdfTitle = pdfName.split('.pdf')[0];
+			// Get the uid
+			const uid = pdfFullName.split('/')[0];
+
+			// Get the user defined tags from firestore
+			let keywords: string[] = [];
+			let userDoc = await firestoreRef.doc(uid).get();
+			if (userDoc.exists) keywords = userDoc.data()!.tags;
+			else console.log('No user tags are defined.');
+
+			// Find which tags are in the pdf
+			let tags: string[] = [];
 			keywords.forEach((keyword) => {
 				if (description.includes(keyword)) tags.push(keyword);
 			});
 
-			console.log(tags);
-
-			// Get the full name of the associated pdf file (with uid path)
-			const pdfName = fileName!.split('output')[0] + '.pdf';
-			// Get the uid associated with the files
-			const uid = pdfName.split('/')[0];
-			// Strip the uid path and .pdf
-			const pdfTitle = pdfName.split('/')[1].split('.pdf')[0];
-
-			const firestoreRef = admin.firestore().collection('users');
-
+			// Data to be placed in firestore
 			const data = {
-				path: fileUri,
 				description: description.split(' '),
 				tags
 			};
 
+			// Store the pdf information in firestore
 			firestoreRef
 				.doc(uid)
 				.collection('documents')
 				.doc(pdfTitle)
 				.set(data);
-
-			const metadata = {
-				description,
-				tags
-			};
-
-			// Set the pdf metadata
-			await bucketRef.file(pdfName!).setMetadata({
-				metadata
-			});
-			console.log('Set file metadata.');
 
 			// Delete .json file once metadata is added to the pdf
 			file.delete();
