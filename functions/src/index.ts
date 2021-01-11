@@ -1,8 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as vision from '@google-cloud/vision';
-// import { google } from 'googleapis';
-// import axios from 'axios';
 import { ObjectMetadata } from 'firebase-functions/lib/providers/storage';
 
 admin.initializeApp(functions.config().firebase);
@@ -13,7 +11,7 @@ exports.scanDocument = functions.storage
 		// Name of the bucket the file is in
 		const bucketName = object.bucket;
 		// Name of the file with directory path and file type
-		const fileName = object.name;
+		const fileName = object.name!;
 
 		// Case for the OCR output file
 		// Run if name has 'output' and has the .json ending
@@ -21,17 +19,17 @@ exports.scanDocument = functions.storage
 			// Reference to the bucket
 			const bucketRef = admin.storage().bucket(bucketName);
 			// Reference to the file in storage
-			const file = bucketRef.file(fileName!);
+			const file = bucketRef.file(fileName);
 
-			await setMetadata(file, fileName!);
+			await setMetadata(file, fileName);
 		}
 		// Case for the uploaded pdf file
 		// Run if uploaded to a folder and has the .pdf ending
-		else if (['/', '.pdf'].every((val) => fileName?.includes(val))) {
+		else if (['/', '.pdf'].every((val) => fileName.includes(val))) {
 			// Uri to the file on google cloud
 			const fileUri = `gs://${bucketName}/${fileName}`;
 			// Uri to the destination for the final file
-			const fileDestUri = `gs://${bucketName}/${fileName?.split('.')[0]}`;
+			const fileDestUri = `gs://${bucketName}/${fileName.split('.')[0]}`;
 
 			await ocr(fileUri, fileDestUri);
 		}

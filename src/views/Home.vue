@@ -1,14 +1,16 @@
 <template>
   <ion-page>
-    <scan v-if="loggedIn" />
+    <scan v-if="loggedIn && onMobile" />
+    <searchbox-vue v-else-if="loggedIn && !onMobile" />
     <login v-else />
   </ion-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { IonPage } from "@ionic/vue";
+import { IonPage, isPlatform } from "@ionic/vue";
 import Scan from "@/components/Scan.vue";
+import SearchboxVue from "@/components/Searchbox.vue";
 import Login from "@/views/Login.vue";
 import { auth } from "@/firebase";
 
@@ -17,6 +19,7 @@ export default defineComponent({
   components: {
     IonPage,
     Scan,
+    SearchboxVue,
     Login,
   },
   setup() {
@@ -27,10 +30,11 @@ export default defineComponent({
       localStorage.refreshToken = auth.currentUser.refreshToken;
     }
 
-    console.log(auth.currentUser);
+    const onMobile = isPlatform("ios");
 
     return {
       loggedIn,
+      onMobile,
     };
   },
 });
