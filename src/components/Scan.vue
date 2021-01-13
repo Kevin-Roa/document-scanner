@@ -38,6 +38,7 @@
     </ion-content>
     <controls :usePhotos="uf" />
   </ion-page>
+  <!-- <loading /> -->
 </template>
 
 <script lang="ts">
@@ -62,6 +63,7 @@ import { usePhotos } from "@/composables/usePhotos.ts";
 
 import Controls from "@/components/Controls.vue";
 import SettingsMenu from "@/components/SettingsMenu.vue";
+// import Loading from "./Loading.vue";
 
 export default defineComponent({
   name: "Home",
@@ -80,6 +82,7 @@ export default defineComponent({
     IonContent,
     Controls,
     SettingsMenu,
+    // Loading,
   },
   setup() {
     const uf = usePhotos();

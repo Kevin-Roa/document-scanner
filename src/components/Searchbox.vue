@@ -14,14 +14,17 @@
         <ion-col v-for="doc in docs" :key="doc" size="auto">
           <ion-card
             :button="true"
-            :href="doc.url"
+            :href="doc.pdfUrl"
             style="width: 110px; height: 150px; margin: 2px"
           >
-            <div style="display: flex; flex-direction: column">
-              <ion-icon
+            <div
+              style="display: flex; flex-direction: column; padding: 5px 10px"
+            >
+              <!-- <ion-icon
                 :icon="newspaper"
                 style="font-size: 76px; margin: 10px auto"
-              ></ion-icon>
+              ></ion-icon> -->
+              <ion-img :src="doc.imgUrl"></ion-img>
               <ion-text style="margin: 0 auto; text-align: center">
                 {{ doc.description[0] }} <br />
                 {{ doc.tags[0] }} <br />
@@ -64,7 +67,7 @@ import {
   IonButtons,
   IonButton,
   IonText,
-  IonIcon,
+  IonImg,
   IonGrid,
   IonRow,
   IonCol,
@@ -83,7 +86,7 @@ export default {
     IonButtons,
     IonButton,
     IonText,
-    IonIcon,
+    IonImg,
     IonGrid,
     IonRow,
     IonCol,

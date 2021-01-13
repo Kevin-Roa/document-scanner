@@ -78,7 +78,7 @@ export default {
     const googleSignIn = () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope("https://www.googleapis.com/auth/cloud-platform");
-      provider.addScope("https://www.googleapis.com/auth/drive");
+      provider.setCustomParameters({ prompt: "select_account" });
 
       auth
         .getRedirectResult()

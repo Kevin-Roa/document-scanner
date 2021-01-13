@@ -15,13 +15,20 @@ exports.scanDocument = functions.storage
 
 		// Case for the OCR output file
 		// Run if name has 'output' and has the .json ending
-		if (['output', '.json'].every((val) => fileName?.includes(val))) {
+		if (['output', '.json'].every((val) => fileName.includes(val))) {
 			// Reference to the bucket
 			const bucketRef = admin.storage().bucket(bucketName);
 			// Reference to the file in storage
 			const file = bucketRef.file(fileName);
 
 			await setMetadata(file, fileName);
+		}
+		// Case for the uploaded preview png file
+		// Run if uploaded to a folder and has the .png ending
+		else if (['/', '.png'].every((val) => fileName.includes(val))) {
+			// Nothing more needs to be done because of the standardized name scheme
+			// The image can be accessed later because the name is known
+			console.log('Uploaded preview image: "' + fileName + '"');
 		}
 		// Case for the uploaded pdf file
 		// Run if uploaded to a folder and has the .pdf ending
@@ -145,7 +152,7 @@ async function setMetadata(file: any, fileName: string) {
 		.doc(uid)
 		.collection('documents')
 		.doc(pdfTitle)
-		.set(data);
+		.update(data);
 
 	console.log('Saved file metadata to firestore.');
 

@@ -7,35 +7,76 @@ import {
 } from '@capacitor/core';
 import { alertController } from '@ionic/vue';
 import { jsPDF } from 'jspdf';
-import { auth, storage } from '@/firebase';
+import { db, auth, storage } from '@/firebase';
 // import axios from 'axios';
 
 export interface Photo {
 	filepath: string;
 	webviewPath?: string;
-	metadata: string[];
-	tags: string[];
 	base64Data: string;
+	blob: Blob;
 }
 
 export function usePhotos() {
 	const { Camera } = Plugins;
 	const photos = ref<Photo[]>([]);
 
-	const uploadPdf = (pdf: jsPDF) => {
-		const bucket = 'document-scanner-ab480.appspot.com';
+	const uploadPdf = (pdf: jsPDF, previewImg: Photo) => {
 		// eslint-disable-next-line
 		const owner = auth.currentUser!.uid;
-		const fileName = new Date().getTime() + '.pdf';
-		const url = `gs://${bucket}/${owner}/${fileName}`;
+		const bucket = 'document-scanner-ab480.appspot.com';
+		const time = new Date().getTime();
 
-		// Upload pdf to cloud storage
-		storage
-			.refFromURL(url)
-			.put(pdf.output('blob'))
-			.catch((err) => {
-				console.log(err);
-			});
+		const baseUrl = `gs://${bucket}/${owner}/${time}`;
+		const pdfUrl = baseUrl + '.pdf';
+		const imgUrl = baseUrl + '.png';
+
+		const pdfData = pdf.output('blob');
+		const imgData = previewImg.blob;
+
+		const dbRef = db
+			.collection('users')
+			.doc(owner)
+			.collection('documents')
+			.doc(`${time}`);
+
+		// Create a new entry in firestore
+		// Upload files and update entry with new data
+		dbRef.set({ date: `${time}` }).then(() => {
+			// Reference to pdf location on google cloud
+			const pdfRef = storage.refFromURL(pdfUrl);
+			// Upload pdf to cloud storage
+			pdfRef
+				.put(pdfData)
+				.then(() => {
+					// Add a download URL for the pdf to firestore
+					pdfRef.getDownloadURL().then((url) => {
+						dbRef.update({
+							pdfUrl: url
+						});
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+
+			// Reference to preview img location on google cloud
+			const imgRef = storage.refFromURL(imgUrl);
+			// Upload preview image to cloud storage
+			imgRef
+				.put(imgData)
+				.then(() => {
+					// Add a download URL for the preview img to firestore
+					imgRef.getDownloadURL().then((url) => {
+						dbRef.update({
+							imgUrl: url
+						});
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		});
 	};
 
 	const createPDF = () => {
@@ -58,7 +99,7 @@ export function usePhotos() {
 			}
 		}
 
-		uploadPdf(pdf);
+		uploadPdf(pdf, photos.value[0]);
 	};
 
 	const convertBlobToBase64 = (blob: Blob) =>
@@ -84,9 +125,8 @@ export function usePhotos() {
 		return {
 			filepath: fileName,
 			webviewPath: photo.webPath,
-			metadata: [],
-			tags: [],
-			base64Data
+			base64Data,
+			blob
 		};
 	};
 
@@ -105,7 +145,7 @@ export function usePhotos() {
 			savePicture(photo, fileName).then((image) => {
 				//Prevent camera from taking duplicate pictures
 				if (date - lastAdded > 1000) {
-					photos.value = [image, ...photos.value];
+					photos.value = [...photos.value, image];
 					lastAdded = new Date().getTime();
 				}
 			});
