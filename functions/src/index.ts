@@ -23,9 +23,9 @@ exports.scanDocument = functions.storage
 
 			await setMetadata(file, fileName);
 		}
-		// Case for the uploaded preview png file
-		// Run if uploaded to a folder and has the .png ending
-		else if (['/', '.png'].every((val) => fileName.includes(val))) {
+		// Case for the uploaded preview jpeg file
+		// Run if uploaded to a folder and has the .jpeg ending
+		else if (['/', '.jpeg'].every((val) => fileName.includes(val))) {
 			// Nothing more needs to be done because of the standardized name scheme
 			// The image can be accessed later because the name is known
 			console.log('Uploaded preview image: "' + fileName + '"');
