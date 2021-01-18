@@ -30,8 +30,8 @@ export default defineComponent({
       localStorage.refreshToken = auth.currentUser.refreshToken;
     }
 
-    // const onMobile = isPlatform("ios");
-    const onMobile = true;
+    const onMobile = isPlatform("ios");
+    // const onMobile = true;
 
     return {
       loggedIn,

@@ -3,7 +3,8 @@ import {
 	Plugins,
 	CameraResultType,
 	CameraSource,
-	CameraPhoto
+	CameraPhoto,
+	CameraOptions
 } from '@capacitor/core';
 import { alertController } from '@ionic/vue';
 import { jsPDF } from 'jspdf';
@@ -29,7 +30,7 @@ export function usePhotos() {
 
 		const baseUrl = `gs://${bucket}/${owner}/${time}`;
 		const pdfUrl = baseUrl + '.pdf';
-		const imgUrl = baseUrl + '.png';
+		const imgUrl = baseUrl + '.jpeg';
 
 		const pdfData = pdf.output('blob');
 		const imgData = previewImg.blob;
@@ -81,11 +82,11 @@ export function usePhotos() {
 
 	const createPDF = () => {
 		const pdf = new jsPDF({ format: [280, 216], unit: 'mm', compress: true });
-		const len = photos.value.length - 1;
-		for (let i = 0; i <= len; ++i) {
+		const len = photos.value.length;
+		for (let i = 0; i < len; ++i) {
 			pdf.addImage(
-				photos.value[len - i].base64Data,
-				'PNG',
+				photos.value[i].base64Data,
+				'JPEG',
 				0,
 				-216,
 				280,
@@ -94,7 +95,7 @@ export function usePhotos() {
 				'NONE',
 				270
 			);
-			if (i < len) {
+			if (i < len - 1) {
 				pdf.addPage();
 			}
 		}
@@ -133,14 +134,15 @@ export function usePhotos() {
 	let lastAdded = new Date().getTime();
 
 	const takePhoto = async () => {
-		Camera.getPhoto({
+		const options = {
 			resultType: CameraResultType.Uri,
 			source: CameraSource.Camera,
-			quality: 60,
+			quality: 50,
 			webUseInput: true
-		}).then((photo) => {
+		} as CameraOptions;
+		Camera.getPhoto(options).then((photo) => {
 			const date = new Date().getTime();
-			const fileName = date + '.png';
+			const fileName = date + '.jpeg';
 
 			savePicture(photo, fileName).then((image) => {
 				//Prevent camera from taking duplicate pictures

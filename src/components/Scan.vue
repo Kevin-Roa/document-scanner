@@ -15,7 +15,9 @@
       <ion-grid style="margin-bottom: 60px">
         <ion-row>
           <ion-col size="3" :key="photo" v-for="photo in uf.photos.value">
-            <ion-img :src="photo.webviewPath"></ion-img>
+            <div style="border-radius: 10px; overflow: hidden">
+              <ion-img :src="photo.webviewPath"></ion-img>
+            </div>
             <div
               style="
                 display: flex;

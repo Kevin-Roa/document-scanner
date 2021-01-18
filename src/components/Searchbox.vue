@@ -11,26 +11,32 @@
     <ion-searchbar></ion-searchbar>
     <ion-grid>
       <ion-row>
-        <ion-col v-for="doc in docs" :key="doc" size="auto">
-          <ion-card
-            :button="true"
-            :href="doc.pdfUrl"
-            style="width: 110px; height: 150px; margin: 2px"
-          >
-            <div
-              style="display: flex; flex-direction: column; padding: 5px 10px"
-            >
-              <!-- <ion-icon
-                :icon="newspaper"
-                style="font-size: 76px; margin: 10px auto"
-              ></ion-icon> -->
-              <ion-img :src="doc.imgUrl"></ion-img>
-              <ion-text style="margin: 0 auto; text-align: center">
-                {{ doc.description[0] }} <br />
-                {{ doc.tags[0] }} <br />
-              </ion-text>
-            </div>
-          </ion-card>
+        <ion-col v-for="doc in docs" :key="doc" size="4" button>
+          <div class="button" style="border-radius: 10px; overflow: hidden">
+            <ion-card style="margin: 0; padding: 0" button :href="doc.pdfUrl">
+              <ion-img
+                style="position: relative; top: 0; left: 0"
+                :src="doc.imgUrl"
+              ></ion-img>
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0px;
+                  left: 0;
+                  height: 25px;
+                  width: 100%;
+                  background: rgb(0, 0, 0, 0.65);
+                "
+              >
+                <p
+                  class="ion-text-center"
+                  style="margin: 0.25em; color: white; font-size: auto"
+                >
+                  {{ doc.description[0] }}
+                </p>
+              </div>
+            </ion-card>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -66,7 +72,7 @@ import {
   IonCard,
   IonButtons,
   IonButton,
-  IonText,
+  // IonText,
   IonImg,
   IonGrid,
   IonRow,
@@ -85,7 +91,7 @@ export default {
     IonCard,
     IonButtons,
     IonButton,
-    IonText,
+    // IonText,
     IonImg,
     IonGrid,
     IonRow,
