@@ -2,7 +2,7 @@
 
 ## Description
 
-> A web app to view/scan documents and save them as a pdf in the cloud. The scanned documents are run through OCR and the data is used to make document querys.
+> A web app to scan documents and save/view them as a pdf in the cloud.
 
 ## Purpose
 
@@ -11,21 +11,6 @@
 3. Use a computer/phone to view the saved documents in a user friendly manner
 3. Scan the pdf files using OCR and generate a list of tags
 4. Use the scanned data to make search querys on the documents
-
-## Technologies Used
-
-- Vue
-- Ionic
-	- Structural Components
-	- Camera Plugin
-- Firebase
-	- Firestore
-	- Cloud Storage
-	- Cloud Functions
-	- Firebase Auth
-- Google Vision Client
-	- Google Vision OCR on PDF files
-- jsPDF
 
 ## What I Learned
 
@@ -53,3 +38,18 @@
 	- Scanning a PDF file and reading its the output
 		- Read/write from/to cloud storage bucket
 - Generating PDF files
+
+## Technologies Used
+
+- Vue
+- Ionic
+	- Structural Components
+	- Camera Plugin
+- Firebase
+	- Firestore
+	- Cloud Storage
+	- Cloud Functions
+	- Firebase Auth
+- Google Vision Client
+	- Google Vision OCR on PDF files
+- jsPDF
